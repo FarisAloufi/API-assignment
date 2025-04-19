@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-  // DOM Elements
+
   const searchBtn = document.getElementById('searchBtn');
   const searchInput = document.getElementById('searchInput');
   const resultsContainer = document.getElementById('resultsContainer');
@@ -8,29 +8,30 @@ document.addEventListener('DOMContentLoaded', function() {
   const noResults = document.getElementById('noResults');
   const errorMessage = document.getElementById('errorMessage');
 
-  // Initial state
+
+
   emptyState.style.display = 'flex';
   loadingIndicator.style.display = 'none';
   noResults.style.display = 'none';
   resultsContainer.style.display = 'none';
   errorMessage.style.display = 'none';
 
-  // Search function
+ 
   async function searchUniversities() {
     const searchTerm = searchInput.value.trim();
 
-    // Validate input
+  
     if (searchTerm.length < 3) {
       showError('Please enter at least 3 characters');
       return;
     }
 
-    // Clear previous state
+   
     resetSearchState();
     loadingIndicator.style.display = 'flex';
 
     try {
-      // Using reliable CORS proxy
+    
       const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(`http://universities.hipolabs.com/search?name=${searchTerm}`)}`);
 
       if (!response.ok) throw new Error('Network response was not ok');
@@ -38,7 +39,8 @@ document.addEventListener('DOMContentLoaded', function() {
       const data = await response.json();
       const universities = JSON.parse(data.contents);
 
-      // Process results
+
+
       loadingIndicator.style.display = 'none';
 
       if (universities.length === 0) {
@@ -54,7 +56,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Display results
   function displayResults(universities) {
     const tableBody = document.getElementById('resultsTableBody');
     tableBody.innerHTML = '';
@@ -88,7 +89,6 @@ document.addEventListener('DOMContentLoaded', function() {
     resultsContainer.style.display = 'block';
   }
 
-  // Helper functions
   function resetSearchState() {
     emptyState.style.display = 'none';
     noResults.style.display = 'none';
@@ -101,12 +101,13 @@ document.addEventListener('DOMContentLoaded', function() {
     errorMessage.style.display = 'block';
   }
 
-  // Event listeners
-  searchBtn.addEventListener('click', searchUniversities);
-  searchInput.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') searchUniversities();
+  searchInput.addEventListener('input', function() {
+    if (searchInput.value.trim() === '') {
+      resetSearchState();
+      emptyState.style.display = 'flex';
+    }
   });
 
-  // Focus search input on page load
+
   searchInput.focus();
 });
